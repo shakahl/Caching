@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Tests</AssemblyName>
+    <RootNamespace>Tests</RootNamespace>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <LangVersion>8</LangVersion>
+    <DisableImplicitPackageTargetFallback>true</DisableImplicitPackageTargetFallback>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="!$([MSBuild]::IsOSUnixLike())">
+    <TargetFrameworks>net452;netcoreapp3.1</TargetFrameworks>
+  </PropertyGroup>
+  <PropertyGroup Condition="$([MSBuild]::IsOSUnixLike())">
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
+    <PackageReference Include="nunit" Version="3.13.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
+    <PackageReference Include="Octopus.Time" Version="1.0.8" />
+    <PackageReference Include="TeamCity.VSTest.TestAdapter" Version="1.0.23" />
+    <PackageReference Include="Assent" Version="1.7.0" />
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="FluentAssertions.Extensions" Version="1.0.18" />
+  </ItemGroup>
+
+
+  <ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.ServiceProcess" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\Caching\Caching.csproj" />
+  </ItemGroup>
+
+</Project>
