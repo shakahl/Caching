@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Octopus.Time;
 
 namespace Octopus.Caching
@@ -12,16 +11,14 @@ namespace Octopus.Caching
         readonly Dictionary<string, Entry> cache = new Dictionary<string, Entry>();
 
         public OctopusCache(IClock clock)
-        {
-            this.clock = clock;
-        }
+            => this.clock = clock;
 
         public TItem GetOrAdd<TItem>(string key, Func<TItem> valueFactory, TimeSpan expiresIn)
             where TItem : notnull
         {
             try
             {
-                return (TItem) GetOrAddEntry(key, valueFactory, expiresIn).Item.Value;
+                return (TItem)GetOrAddEntry(key, valueFactory, expiresIn).Item.Value;
             }
             catch
             {
@@ -50,7 +47,9 @@ namespace Octopus.Caching
         public void Delete(string key)
         {
             lock (cache)
+            {
                 cache.Remove(key);
+            }
         }
 
         public void RemoveWhere(Predicate<string> keyPredicate)
@@ -77,7 +76,9 @@ namespace Octopus.Caching
         public void ResetAll()
         {
             lock (cache)
+            {
                 cache.Clear();
+            }
         }
 
         class Entry
@@ -96,5 +97,4 @@ namespace Octopus.Caching
             public bool HasExpired(IClock clock) => Expiry < clock.GetUtcTime();
         }
     }
-
 }
