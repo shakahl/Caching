@@ -49,7 +49,6 @@ class Build : NukeBuild
     Target Compile => _ => _
         .DependsOn(Clean)
         .DependsOn(Restore)
-        .DependsOn(CalculateVersion)
         .Executes(() =>
         {
             Logger.Info("Building Octopus.Caching v{0}", OctoVersionInfo.FullSemVer);
