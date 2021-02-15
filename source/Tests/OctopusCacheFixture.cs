@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
 using Octopus.Caching;
@@ -144,6 +145,41 @@ namespace Tests
 
             expectedExceptions.Should().HaveCount(5, "the first few initialization calls should have thrown an exception");
             initializationCalls.Should().Be(6, "the initialization function should have failed a few times, then called one more time successfully once it starts working");
+        }
+
+        [Test]
+        [Description("This test proves we handle exceptions being thrown in the initialization code, by allowing the exception to bubble up to the caller, and allowing the initialization to be attempted again.")]
+        public async Task WhenPassedATask_AndTheInitializerThrows_WeShouldEvictAndTryAgain()
+        {
+            var cacheKey = "test";
+            var initializationCalls = 0;
+            var expectedExceptions = new List<DivideByZeroException>();
+
+            var cache = new OctopusCache(clock);
+            for (var i = 0; i < 10; i++)
+            {
+                try
+                {
+                    var cached = await cache.GetOrAdd(cacheKey, async () => await AsyncMethod(i), TimeSpan.FromSeconds(1));
+
+                    cached.Should().Be("value-5", "the value I cached after failing the first few times should be returned consistently until the cache expires");
+                }
+                catch (DivideByZeroException ex)
+                {
+                    expectedExceptions.Add(ex);
+                }
+            }
+
+            expectedExceptions.Should().HaveCount(5, "the first few initialization calls should have thrown an exception");
+            initializationCalls.Should().Be(6, "the initialization function should have failed a few times, then called one more time successfully once it starts working");
+
+            async Task<string> AsyncMethod(int callCounter)
+            {
+                await Task.Delay(1);
+                initializationCalls++;
+                // Fail on the first few calls, and succeed thereafter - simulates a SQL Server being unavailable for a while
+                if (callCounter < 5) throw new DivideByZeroException();
+                return $"value-{callCounter}";            }
         }
 
         [Test]

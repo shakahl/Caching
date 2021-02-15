@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Octopus.Time;
 
 namespace Octopus.Caching
@@ -19,6 +20,22 @@ namespace Octopus.Caching
             try
             {
                 return (TItem)GetOrAddEntry(key, valueFactory, expiresIn).Item.Value;
+            }
+            catch
+            {
+                // Lazy initialization failed, we don't want to cache the exception
+                // This could possibly evict a successful resolution that happened in the meantime, but that's not too terrible
+                Delete(key);
+                throw;
+            }
+        }
+
+        public async Task<TItem> GetOrAdd<TItem>(string key, Func<Task<TItem>> valueFactory, TimeSpan expiresIn)
+            where TItem : notnull
+        {
+            try
+            {
+                return await (Task<TItem>) GetOrAddEntry(key, valueFactory, expiresIn).Item.Value;
             }
             catch
             {
