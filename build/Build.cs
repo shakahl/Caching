@@ -32,6 +32,12 @@ class Build : NukeBuild
             EnsureCleanDirectory(ArtifactsDirectory);
         });
 
+    Target CalculateVersion => _ => _
+        .Executes(() =>
+        {
+            //all the magic happens inside `[NukeOctoVersion]` above. we just need a target for TeamCity to call
+        });
+
     Target Restore => _ => _
         .DependsOn(Clean)
         .Executes(() =>
@@ -43,6 +49,7 @@ class Build : NukeBuild
     Target Compile => _ => _
         .DependsOn(Clean)
         .DependsOn(Restore)
+        .DependsOn(CalculateVersion)
         .Executes(() =>
         {
             Logger.Info("Building Octopus.Caching v{0}", OctoVersionInfo.FullSemVer);
