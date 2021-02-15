@@ -16,9 +16,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{6292DEF5-E6B1-4590-B882-C6C616E66E52}"
 ProjectSection(SolutionItems) = preProject
 	..\build\.editorconfig = ..\build\.editorconfig
-	..\build\_build.csproj = ..\build\_build.csproj
-	..\build\_build.csproj.DotSettings = ..\build\_build.csproj.DotSettings
-	..\build\Build.cs = ..\build\Build.cs
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{F2E52E31-40D3-4D04-964B-10EB9432BA47}"
@@ -35,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caching", "Caching\Caching.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{B9A1B461-6A07-44CA-A5D8-0E08CBF0F95D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_build", "..\build\_build.csproj", "{82B7A55D-BDDE-4B09-B482-4406960D0C1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,5 +48,7 @@ Global
 		{B9A1B461-6A07-44CA-A5D8-0E08CBF0F95D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9A1B461-6A07-44CA-A5D8-0E08CBF0F95D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9A1B461-6A07-44CA-A5D8-0E08CBF0F95D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82B7A55D-BDDE-4B09-B482-4406960D0C1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82B7A55D-BDDE-4B09-B482-4406960D0C1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 EndGlobal
