@@ -4,6 +4,7 @@ using System.Threading;
 using FluentAssertions;
 using NUnit.Framework;
 using Octopus.Caching;
+using Octopus.Time;
 
 namespace Tests
 {
