@@ -250,5 +250,20 @@ namespace Tests
 
             initializationCalls.Should().Be(20, "after clearing the cache we should have to reinitialize everything");
         }
+
+        [Test]
+        public void UpdatingACacheEntryShouldReplaceIt()
+        {
+            var cache = new OctopusCache(clock);
+            var cacheKey = "key-1";
+            var cached = cache.GetOrAdd(cacheKey, () => $"value-1", TimeSpan.FromHours(1));
+
+            cached.Should().Be($"value-1", "the value I initially cached should be returned until the cache is cleared");
+
+            cache.Update(cacheKey, "value-2", TimeSpan.FromHours(1));
+            cached = cache.GetOrAdd(cacheKey, () => $"value-3", TimeSpan.FromHours(1));
+
+            cached.Should().Be($"value-2", "the value the I updated it to should be returned until the cache expires again");
+        }
     }
 }

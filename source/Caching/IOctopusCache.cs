@@ -11,5 +11,6 @@ namespace Octopus.Caching
         void RemoveWhere(Predicate<string> keyPredicate);
         void RemoveWhere<TItem>(Func<string, TItem, bool> valuePredicate) where TItem : notnull;
         void ResetAll();
+        TItem Update<TItem>(string key, TItem value, TimeSpan expiresIn) where TItem : notnull;
     }
 }

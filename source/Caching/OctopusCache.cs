@@ -35,7 +35,7 @@ namespace Octopus.Caching
         {
             try
             {
-                return await (Task<TItem>) GetOrAddEntry(key, valueFactory, expiresIn).Item.Value;
+                return await (Task<TItem>)GetOrAddEntry(key, valueFactory, expiresIn).Item.Value;
             }
             catch
             {
@@ -43,6 +43,17 @@ namespace Octopus.Caching
                 // This could possibly evict a successful resolution that happened in the meantime, but that's not too terrible
                 Delete(key);
                 throw;
+            }
+        }
+
+        public TItem Update<TItem>(string key, TItem value, TimeSpan expiresIn)
+            where TItem : notnull
+        {
+            lock (cache)
+            {
+                cache.Remove(key);
+                cache[key] = new Entry(() => value, clock.GetUtcTime().Add(expiresIn));
+                return (TItem) cache[key].Item.Value;
             }
         }
 

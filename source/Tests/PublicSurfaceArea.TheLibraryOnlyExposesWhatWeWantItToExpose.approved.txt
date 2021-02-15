@@ -4,8 +4,10 @@ Octopus.Caching.IOctopusCache.Delete
 Octopus.Caching.IOctopusCache.RemoveWhere
 Octopus.Caching.IOctopusCache.RemoveWhere
 Octopus.Caching.IOctopusCache.ResetAll
+Octopus.Caching.IOctopusCache.Update
 Octopus.Caching.OctopusCache.GetOrAdd
 Octopus.Caching.OctopusCache.GetOrAdd
+Octopus.Caching.OctopusCache.Update
 Octopus.Caching.OctopusCache.Delete
 Octopus.Caching.OctopusCache.RemoveWhere
 Octopus.Caching.OctopusCache.RemoveWhere
