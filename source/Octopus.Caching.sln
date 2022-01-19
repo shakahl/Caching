@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{109F6CE6-AF17-4963-8200-A7DEEF4A39DD}"
 ProjectSection(SolutionItems) = preProject
@@ -11,6 +11,7 @@ ProjectSection(SolutionItems) = preProject
 	..\GitVersion.yml = ..\GitVersion.yml
 	..\LICENSE.txt = ..\LICENSE.txt
 	..\readme.md = ..\readme.md
+	..\global.json = ..\global.json
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{6292DEF5-E6B1-4590-B882-C6C616E66E52}"
