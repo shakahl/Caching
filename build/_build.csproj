@@ -15,6 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageDownload Include="OctoVersion.Tool" Version="[0.2.961-mattr-bump-libgit2sharp]" />
+    <PackageDownload Include="OctoVersion.Tool" Version="[0.2.962]" />
   </ItemGroup>
 </Project>
