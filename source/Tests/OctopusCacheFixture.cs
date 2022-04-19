@@ -157,7 +157,6 @@ namespace Tests
 
             var cache = new OctopusCache(clock);
             for (var i = 0; i < 10; i++)
-            {
                 try
                 {
                     var cached = await cache.GetOrAdd(cacheKey, async () => await AsyncMethod(i), TimeSpan.FromSeconds(1));
@@ -168,7 +167,6 @@ namespace Tests
                 {
                     expectedExceptions.Add(ex);
                 }
-            }
 
             expectedExceptions.Should().HaveCount(5, "the first few initialization calls should have thrown an exception");
             initializationCalls.Should().Be(6, "the initialization function should have failed a few times, then called one more time successfully once it starts working");
@@ -179,7 +177,8 @@ namespace Tests
                 initializationCalls++;
                 // Fail on the first few calls, and succeed thereafter - simulates a SQL Server being unavailable for a while
                 if (callCounter < 5) throw new DivideByZeroException();
-                return $"value-{callCounter}";            }
+                return $"value-{callCounter}";
+            }
         }
 
         [Test]
@@ -256,14 +255,14 @@ namespace Tests
         {
             var cache = new OctopusCache(clock);
             var cacheKey = "key-1";
-            var cached = cache.GetOrAdd(cacheKey, () => $"value-1", TimeSpan.FromHours(1));
+            var cached = cache.GetOrAdd(cacheKey, () => "value-1", TimeSpan.FromHours(1));
 
-            cached.Should().Be($"value-1", "the value I initially cached should be returned until the cache is cleared");
+            cached.Should().Be("value-1", "the value I initially cached should be returned until the cache is cleared");
 
             cache.Update(cacheKey, "value-2", TimeSpan.FromHours(1));
-            cached = cache.GetOrAdd(cacheKey, () => $"value-3", TimeSpan.FromHours(1));
+            cached = cache.GetOrAdd(cacheKey, () => "value-3", TimeSpan.FromHours(1));
 
-            cached.Should().Be($"value-2", "the value the I updated it to should be returned until the cache expires again");
+            cached.Should().Be("value-2", "the value the I updated it to should be returned until the cache expires again");
         }
     }
 }

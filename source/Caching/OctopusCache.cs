@@ -53,7 +53,7 @@ namespace Octopus.Caching
             {
                 cache.Remove(key);
                 cache[key] = new Entry(() => value, clock.GetUtcTime().Add(expiresIn));
-                return (TItem) cache[key].Item.Value;
+                return (TItem)cache[key].Item.Value;
             }
         }
 

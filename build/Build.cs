@@ -1,5 +1,6 @@
 // ReSharper disable RedundantUsingDirective
 
+using System;
 using Nuke.Common;
 using Nuke.Common.Execution;
 using Nuke.Common.IO;
@@ -18,9 +19,13 @@ class Build : NukeBuild
 
     [Solution] readonly Solution Solution;
 
-    [Parameter("Branch name for OctoVersion to use to calculate the version number. Can be set via the environment variable OCTOVERSION_CurrentBranch.", Name = "OCTOVERSION_CurrentBranch")] readonly string BranchName;
+    [Parameter("Branch name for OctoVersion to use to calculate the version number. Can be set via the environment variable OCTOVERSION_CurrentBranch.", Name = "OCTOVERSION_CurrentBranch")]
+    readonly string BranchName;
+
     [Parameter("Whether to auto-detect the branch name - this is okay for a local build, but should not be used under CI.")] readonly bool AutoDetectBranch = IsLocalBuild;
-    [OctoVersion(UpdateBuildNumber = true, BranchParameter = nameof(BranchName), AutoDetectBranchParameter = nameof(AutoDetectBranch), Framework = "net6.0")] readonly OctoVersionInfo OctoVersionInfo;
+
+    [OctoVersion(UpdateBuildNumber = true, BranchParameter = nameof(BranchName), AutoDetectBranchParameter = nameof(AutoDetectBranch), Framework = "net6.0")]
+    readonly OctoVersionInfo OctoVersionInfo;
 
     AbsolutePath SourceDirectory => RootDirectory / "source";
     AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
@@ -61,7 +66,6 @@ class Build : NukeBuild
                 .SetVersion(OctoVersionInfo.FullSemVer)
                 .EnableNoRestore());
         });
-
 
     Target Test => _ => _
         .DependsOn(Compile)
