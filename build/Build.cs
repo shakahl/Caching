@@ -1,6 +1,7 @@
 // ReSharper disable RedundantUsingDirective
 
 using System;
+using JetBrains.Annotations;
 using Nuke.Common;
 using Nuke.Common.Execution;
 using Nuke.Common.IO;
@@ -15,16 +16,26 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 [UnsetVisualStudioEnvironmentVariables]
 class Build : NukeBuild
 {
-    [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")] readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
+    /// Support plugins are available for:
+    /// - JetBrains ReSharper        https://nuke.build/resharper
+    /// - JetBrains Rider            https://nuke.build/rider
+    /// - Microsoft VisualStudio     https://nuke.build/visualstudio
+    /// - Microsoft VSCode           https://nuke.build/vscode
+
+    [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
+    readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
     [Solution] readonly Solution Solution;
 
-    [Parameter("Branch name for OctoVersion to use to calculate the version number. Can be set via the environment variable OCTOVERSION_CurrentBranch.", Name = "OCTOVERSION_CurrentBranch")]
+    [Parameter("Branch name for OctoVersion to use to calculate the version number. Can be set via the environment variable OCTOVERSION_CurrentBranch.",
+        Name = "OCTOVERSION_CurrentBranch")]
     readonly string BranchName;
 
-    [Parameter("Whether to auto-detect the branch name - this is okay for a local build, but should not be used under CI.")] readonly bool AutoDetectBranch = IsLocalBuild;
+    [Parameter("Whether to auto-detect the branch name - this is okay for a local build, but should not be used under CI.")]
+    readonly bool AutoDetectBranch = IsLocalBuild;
 
-    [OctoVersion(UpdateBuildNumber = true, BranchParameter = nameof(BranchName), AutoDetectBranchParameter = nameof(AutoDetectBranch), Framework = "net6.0")]
+    [OctoVersion(UpdateBuildNumber = true, BranchParameter = nameof(BranchName),
+        AutoDetectBranchParameter = nameof(AutoDetectBranch), Framework = "net6.0")]
     readonly OctoVersionInfo OctoVersionInfo;
 
     AbsolutePath SourceDirectory => RootDirectory / "source";
@@ -32,17 +43,10 @@ class Build : NukeBuild
     AbsolutePath LocalPackagesDirectory => RootDirectory / ".." / "LocalPackages";
 
     Target Clean => _ => _
-        .Before(Restore)
         .Executes(() =>
         {
-            SourceDirectory.GlobDirectories("**/bin", "**/obj", "**/TestResults").ForEach(DeleteDirectory);
+            SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
             EnsureCleanDirectory(ArtifactsDirectory);
-        });
-
-    Target CalculateVersion => _ => _
-        .Executes(() =>
-        {
-            //all the magic happens inside `[NukeOctoVersion]` above. we just need a target for TeamCity to call
         });
 
     Target Restore => _ => _
@@ -54,19 +58,18 @@ class Build : NukeBuild
         });
 
     Target Compile => _ => _
-        .DependsOn(Clean)
         .DependsOn(Restore)
         .Executes(() =>
         {
-            Logger.Info("Building {0} v{1}", Solution.Name, OctoVersionInfo.FullSemVer);
-
             DotNetBuild(_ => _
                 .SetProjectFile(Solution)
                 .SetConfiguration(Configuration)
                 .SetVersion(OctoVersionInfo.FullSemVer)
+                .SetInformationalVersion(OctoVersionInfo.InformationalVersion)
                 .EnableNoRestore());
         });
 
+    [PublicAPI]
     Target Test => _ => _
         .DependsOn(Compile)
         .Executes(() =>
@@ -80,15 +83,16 @@ class Build : NukeBuild
 
     Target Pack => _ => _
         .DependsOn(Compile)
-        .DependsOn(Test)
         .Executes(() =>
         {
             DotNetPack(_ => _
                 .SetProject(Solution)
+                .SetVersion(OctoVersionInfo.FullSemVer)
                 .SetConfiguration(Configuration)
                 .SetOutputDirectory(ArtifactsDirectory)
                 .EnableNoBuild()
-                .AddProperty("Version", OctoVersionInfo.FullSemVer)
+                .DisableIncludeSymbols()
+                .SetVerbosity(DotNetVerbosity.Normal)
             );
         });
 
@@ -98,13 +102,13 @@ class Build : NukeBuild
         .Executes(() =>
         {
             EnsureExistingDirectory(LocalPackagesDirectory);
-            CopyFileToDirectory(ArtifactsDirectory / $"{Solution.Name}.{OctoVersionInfo.FullSemVer}.nupkg", LocalPackagesDirectory, FileExistsPolicy.Overwrite);
+            ArtifactsDirectory.GlobFiles("*.nupkg")
+                .ForEach(package => CopyFileToDirectory(package, LocalPackagesDirectory, FileExistsPolicy.Overwrite));
         });
+    
+    Target Default => _ => _
+        .DependsOn(Pack)
+        .DependsOn(CopyToLocalPackages);
 
-    /// Support plugins are available for:
-    /// - JetBrains ReSharper        https://nuke.build/resharper
-    /// - JetBrains Rider            https://nuke.build/rider
-    /// - Microsoft VisualStudio     https://nuke.build/visualstudio
-    /// - Microsoft VSCode           https://nuke.build/vscode
-    public static int Main() => Execute<Build>(x => x.Pack);
+    public static int Main() => Execute<Build>(x => x.Default);
 }
