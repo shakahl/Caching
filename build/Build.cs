@@ -21,7 +21,6 @@ class Build : NukeBuild
     /// - JetBrains Rider            https://nuke.build/rider
     /// - Microsoft VisualStudio     https://nuke.build/visualstudio
     /// - Microsoft VSCode           https://nuke.build/vscode
-
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
@@ -31,8 +30,7 @@ class Build : NukeBuild
         Name = "OCTOVERSION_CurrentBranch")]
     readonly string BranchName;
 
-    [Parameter("Whether to auto-detect the branch name - this is okay for a local build, but should not be used under CI.")]
-    readonly bool AutoDetectBranch = IsLocalBuild;
+    [Parameter("Whether to auto-detect the branch name - this is okay for a local build, but should not be used under CI.")] readonly bool AutoDetectBranch = IsLocalBuild;
 
     [OctoVersion(UpdateBuildNumber = true, BranchParameter = nameof(BranchName),
         AutoDetectBranchParameter = nameof(AutoDetectBranch), Framework = "net6.0")]
@@ -105,7 +103,7 @@ class Build : NukeBuild
             ArtifactsDirectory.GlobFiles("*.nupkg")
                 .ForEach(package => CopyFileToDirectory(package, LocalPackagesDirectory, FileExistsPolicy.Overwrite));
         });
-    
+
     Target Default => _ => _
         .DependsOn(Pack)
         .DependsOn(CopyToLocalPackages);
