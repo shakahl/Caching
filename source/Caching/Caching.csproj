@@ -4,7 +4,10 @@
     <Authors>Octopus Deploy</Authors>
     <AssemblyName>Octopus.Caching</AssemblyName>
     <RootNamespace>Octopus.Caching</RootNamespace>
+    <PackageId>Octopus.Caching</PackageId>
+    <Description>A simple caching class.</Description>
     <PackageProjectUrl>https://github.com/OctopusDeploy/Caching</PackageProjectUrl>
+    <PackageIconUrl>http://i.octopusdeploy.com/resources/Avatar3_360.png</PackageIconUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <DisableImplicitPackageTargetFallback>true</DisableImplicitPackageTargetFallback>
     <Nullable>enable</Nullable>
