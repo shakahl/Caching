@@ -7,7 +7,7 @@
     <PackageId>Octopus.Caching</PackageId>
     <Description>A simple caching class.</Description>
     <PackageProjectUrl>https://github.com/OctopusDeploy/Caching</PackageProjectUrl>
-    <PackageIconUrl>http://i.octopusdeploy.com/resources/Avatar3_360.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <DisableImplicitPackageTargetFallback>true</DisableImplicitPackageTargetFallback>
     <Nullable>enable</Nullable>
@@ -36,6 +36,9 @@
 
   <ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">
     <Reference Include="System.Security" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
